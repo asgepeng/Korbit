@@ -44,7 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\DbClient.cs" />
+    <Compile Include="Models\SqlHelpers.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
