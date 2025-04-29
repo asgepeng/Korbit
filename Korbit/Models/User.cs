@@ -10,7 +10,6 @@ namespace Korbit.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
         public EmailCollection Emails { get; } = new EmailCollection();
         public AddressCollection Addresses { get; } = new AddressCollection();
@@ -152,6 +151,7 @@ WHERE isDeleted = 0 {(ownerID > 0 ? " AND ownerID = " + ownerID : "")}";
         public int Id { get; set; } = 0;
         public string Address { get; set; } = "";
         public int EmailTypeID { get; set; } = 0;
+        public bool IsPrimary { get; set; } = false;
     }
 
     public class EmailCollection : List<Email>
@@ -189,6 +189,19 @@ WHERE isDeleted = 0 { (ownerID > 0 ? " AND ownerID = " + ownerID : "")}";
                         });
                     }
                 }
+            }
+        }
+        public void SetPrimaryEmail(int emailId)
+        {
+            var primaryEmailId = false;
+            for (int i = 0; i < this.Count; i++)
+            {
+                this[i].IsPrimary = this[i].Id == emailId;
+                if (this[i].IsPrimary) primaryEmailId = true;
+            }
+            if (!primaryEmailId && this.Count > 0)
+            {
+                this[0].IsPrimary = true;
             }
         }
     }
