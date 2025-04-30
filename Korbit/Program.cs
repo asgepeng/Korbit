@@ -14,13 +14,13 @@ namespace Korbit
         static Models.DbClient db;
         static void Main(string[] args)
         {
-            db = new Models.DbClient();
             var user = CollectUserData();
-
+            Console.WriteLine("Hello World");
             Console.Write("Do you to save this data to database (Y/N)?");
             var keyPressed = Console.ReadKey();
             if (keyPressed.KeyChar == 'Y' || keyPressed.KeyChar == 'y')
             {
+                db = new Models.DbClient();
                 var repository = new Models.UserRepository(db);
                 user.Id = repository.Create(user);
                 if (user.Id > 0)
@@ -40,41 +40,41 @@ namespace Korbit
             Console.WriteLine("COLLECT DATA USER");
             List<string> fields = new List<string>();
             fields.Add("COLLECT DATA USER");
-        getUsername:
-            Console.Write("Username *    : ");
             var user = new Models.User();
-            user.Name = Console.ReadLine();
-            if (user.Name.Trim() == "")
+            while(user.Name.Trim() == "")
             {
-                RefreshScreen("ERROR: Username is required", fields);
-                goto getUsername;
+                Console.Write("Username *    : ");
+                user.Name = Console.ReadLine();
+                if (user.Name.Trim() == "") RefreshScreen("ERROR: Username is required", fields);
             }
+            
             fields.Add($"Username *     : {user.Name}");
             RefreshScreen("", fields);
-        getEmailAddress:
-            Console.Write("Email Address *: ");
-            var emailAddress = Console.ReadLine();
-            if (emailAddress.Trim() == "")
+            var emailAddress = "";
+            while (emailAddress.Trim() == "")
             {
-                RefreshScreen("ERROR: Email address is required", fields);
-                goto getEmailAddress;
-            }
-            if (!IsValidEmail(emailAddress))
-            {
-                RefreshScreen("ERROR: Please enter valid email", fields);
-                goto getEmailAddress;
+                Console.Write("Email Address *: ");
+                emailAddress = Console.ReadLine();
+                if (emailAddress.Trim() == "") RefreshScreen("ERROR: Email address is required", fields);
+                else
+                {
+                    if (!IsValidEmail(emailAddress))
+                    {
+                        emailAddress = "";
+                        RefreshScreen("ERROR: Please enter valid email", fields);
+                    }
+                }
             }
             fields.Add($"Email Address *: {emailAddress}");
             RefreshScreen("", fields);
-        getEmailType:
-            Console.Write("Email Type (1. Office, 2. Personal) *: ");
-            var type = Console.ReadKey();
-            if (type.KeyChar != '1' && type.KeyChar != '2')
+            int iType = 0;
+            while (iType != 1 && iType != 2)
             {
-                RefreshScreen("ERROR: Please type 1 or 2 for email type", fields);
-                goto getEmailType;
+                Console.Write("Email Type (1. Office, 2. Personal) *: ");
+                var type = Console.ReadKey();
+                int.TryParse(type.KeyChar.ToString(), out iType);
+                if (iType != 1 && iType != 2) RefreshScreen("ERROR: Please type 1 or 2 for email type", fields);
             }
-            int.TryParse(type.KeyChar.ToString(), out int iType);
             var email = new Models.Email()
             {
                 Address = emailAddress,
